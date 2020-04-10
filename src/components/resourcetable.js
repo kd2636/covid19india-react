@@ -44,25 +44,29 @@ const useItemTextStyles = makeStyles((theme) => ({
   },
 }));
 
+// Wrap a URL/Social media handle/phone number with anchor tag so that that text is clickable
+const formatLink = (linkText) => {
+  const formatLink = [
+    {regexp: /\s*(https?:\/\/.+)\s*/g, replace: '<a href="$1">Link</a>'},
+    {
+      regexp: /\s*Instagram: @(.+)\s*/g,
+      replace: '<a href="https://www.instagram.com/$1">Instagram: @$1</a>',
+    },
+    {
+      regexp: /\s*Facebook: @(.+)\s*/g,
+      replace: '<a href="https://www.facebook.com/$1">Facebook: @$1</a>',
+    },
+    {regexp: /^\s*(\d+)\s*$/, replace: '<a href="tel:$1">$1</a>'},
+  ];
+  return formatLink.reduce((a, c) => a.replace(c.regexp, c.replace), linkText);
+};
+
 const getFormattedLink = (initialValue) => {
-  const reurl1 = /\s*(https?:\/\/.+)\s*/g;
-  // let reurl2 = /\s*.*(www\..+)\s*/g
-  const reinsta = /\s*Instagram: @(.+)\s*/g;
-  const refb = /\s*Facebook: @(.+)\s*/g;
-  const s1 = initialValue.replace(reurl1, '<a href="$1">Link</a>');
-  const s2 = s1.replace(
-    reinsta,
-    '<a href="https://www.instagram.com/$1">Instagram: @$1</a>'
-  );
-  const s3 = s2.replace(
-    refb,
-    '<a href="https://www.facebook.com/$1">Facebook: @$1</a>'
-  );
   return (
     <div
       className="tablecelldata"
       dangerouslySetInnerHTML={{
-        __html: s3,
+        __html: formatLink(initialValue),
       }}
     ></div>
   );
@@ -71,25 +75,11 @@ const getFormattedLink = (initialValue) => {
 const FormattedCell = ({value: initialValue, editable}) => {
   // We need to keep and update the state of the cell normally
   const [value, setValue] = React.useState(initialValue);
-  const reurl1 = /\s*(https?:\/\/.+)\s*/g;
-  // let reurl2 = /\s*.*(www\..+)\s*/g
-  const reinsta = /\s*Instagram: @(.+)\s*/g;
-  const refb = /\s*Facebook: @(.+)\s*/g;
 
   // If the initialValue is changed externall, sync it up with our state
   React.useEffect(() => {
-    const s1 = initialValue.replace(reurl1, '<a href="$1">Link</a>');
-    const s2 = s1.replace(
-      reinsta,
-      '<a href="https://www.instagram.com/$1">Instagram: @$1</a>'
-    );
-    const s3 = s2.replace(
-      refb,
-      '<a href="https://www.facebook.com/$1">Facebook: @$1</a>'
-    );
-    // let s4 = s3.replace(reurl2, '<a href="http://$1">Link</a>');
-    setValue(s3);
-  }, [initialValue, reurl1, refb, reinsta]);
+    setValue(formatLink(initialValue));
+  }, [initialValue]);
 
   return (
     <div

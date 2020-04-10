@@ -19,7 +19,6 @@ function Resources(props) {
   const checkForResizeEvent = useCallback((event) => {
     if (window.innerWidth > 639) setIsDesktop(true);
     else setIsDesktop(false);
-    // console.log(isDesktop);
   }, []);
 
   useEffect(() => {
@@ -36,13 +35,9 @@ function Resources(props) {
       const [response] = await Promise.all([
         axios.get('https://api.covid19india.org/resources/resources.json'),
       ]);
-      // console.log(response)
-      // console.log("Column names are")
-      // console.log(columns)
       // setData(response.data.resources);
       const hashmap = {};
       response.data.resources.forEach((x) => {
-        // console.log(x)
         if (typeof hashmap[x['state']] === 'undefined')
           hashmap[x['state']] = {};
         if (typeof hashmap[x['state']][x['city']] === 'undefined')
@@ -59,9 +54,8 @@ function Resources(props) {
       // setIndianState(Object.keys()[0]);
 
       setFetched(true);
-      // console.log(resourcedict);
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     }
   };
   const memocols = React.useMemo(
@@ -100,7 +94,7 @@ function Resources(props) {
       return Object.keys(resourcedict[indianstate])
         .sort()
         .map((x) => (
-          <option key={x.id} value={x}>
+          <option key={x} value={x}>
             {x}
           </option>
         ));
@@ -112,7 +106,7 @@ function Resources(props) {
     return Object.keys(resourcedict)
       .sort()
       .map((x) => (
-        <option key={x.id} value={x}>
+        <option key={x} value={x}>
           {x}
         </option>
       ));
@@ -124,7 +118,7 @@ function Resources(props) {
         return Object.keys(resourcedict[indianstate][city])
           .sort()
           .map((x) => (
-            <option key={x.id} value={x}>
+            <option key={x} value={x}>
               {x}
             </option>
           ));
@@ -133,11 +127,8 @@ function Resources(props) {
   };
 
   const filterTable = function () {
-    // console.log('Search Button Pressed');
-    // console.log(`Filters are: ${indianstate} ---> ${city} ----> ${category}`);
     let a = [];
     if (category === 'all') {
-      // console.log("All category selected");
       if (city === 'all') {
         Object.values(resourcedict[indianstate]).forEach((citydata) => {
           Object.values(citydata).forEach((category) => {
@@ -150,7 +141,6 @@ function Resources(props) {
         });
       }
     } else {
-      // console.log(`Category chosen ${category}`);
       // a = resourcedict[indianstate][city][category];
       if (city === 'all') {
         Object.values(resourcedict[indianstate]).forEach((citydata) => {
@@ -173,11 +163,9 @@ function Resources(props) {
         );
       }
     } catch (err) {
-      // console.log('No PAN India row found');
+      console.log('No PAN India row found');
     }
     setData(a);
-    // console.log(resourcedict[indianstate][city][category]);
-    // console.log(data);
     setShowTable(true);
   };
 
@@ -205,7 +193,6 @@ function Resources(props) {
   };
   const changeCategory = function (changedcategoryevent) {
     setCategory(changedcategoryevent.target.value);
-    // console.log(changedcategoryevent.target.value);
   };
   return (
     <div className="Resources">
