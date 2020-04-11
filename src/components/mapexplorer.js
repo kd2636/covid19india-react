@@ -380,8 +380,12 @@ function MapExplorer({
   const {name, lastupdatedtime} = currentHoveredRegion;
 
   useEffect(() => {
-    setTestObj(stateTestData.find((obj) => obj.state === panelRegion.name));
-  }, [panelRegion, stateTestData]);
+    setTestObj(
+      stateTestData.find(
+        (obj) => obj.state === panelRegion.name && obj.totaltested !== ''
+      )
+    );
+  }, [panelRegion, stateTestData, testObj]);
 
   return (
     <div
